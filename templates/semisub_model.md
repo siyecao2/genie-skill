@@ -122,13 +122,13 @@ cm = CompartmentManager();
 // 阶段 10: 边界条件 (模型对称, 3点约束刚体位移)
 // ============================================================
 var sp1 = SupportPoint(Point(-20, 0, 12));
-sp1.fixation = SupportFixation(1, 1, 0, 0, 0, 0);
+sp1.boundary = BoundaryCondition(Fixed, Fixed, Free, Free, Free, Free);
 
 var sp2 = SupportPoint(Point(20, 0, 12));
-sp2.fixation = SupportFixation(1, 1, 0, 0, 0, 0);
+sp2.boundary = BoundaryCondition(Fixed, Fixed, Free, Free, Free, Free);
 
 var sp3 = SupportPoint(Point(0, -20, 12));
-sp3.fixation = SupportFixation(0, 1, 0, 0, 0, 0);
+sp3.boundary = BoundaryCondition(Free, Fixed, Free, Free, Free, Free);
 
 // ============================================================
 // 阶段 11: 载荷

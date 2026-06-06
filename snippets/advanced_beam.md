@@ -1,4 +1,5 @@
 # Advanced Beam Modeling - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreateBeam\CreateBeam.htm + \Help\GuidingDocuments\ConvertTubularJoints\ConvertTubularJoints.pdf`
 
 ## Segmented Beam (Multi-Section)
 
@@ -21,15 +22,15 @@ var segs2 = segs[1].divideAtEccentric(Point(0 m, 0 m, 25 m));
 // segs2[0]: 10~25m, segs2[1]: 25~40m
 
 // Set different sections for each segment
-bLeg.setSegmentSection(0, Pipe800);  // Bottom segment 0~10m
-bLeg.setSegmentSection(1, Pipe600);  // Middle segment 10~25m
-bLeg.setSegmentSection(2, Pipe400);  // Top segment 25~40m
+bLeg.SetSegmentSection(0, Pipe800);  // Bottom segment 0~10m
+bLeg.SetSegmentSection(1, Pipe600);  // Middle segment 10~25m
+bLeg.SetSegmentSection(2, Pipe400);  // Top segment 25~40m
 
 // Alternative: divide using relative position (0.0 to 1.0)
 var bLeg2 = StraightBeam(Point(20 m, 0 m, 0 m), Point(20 m, 0 m, 40 m));
 bLeg2.divideAtEccentric(0.5);          // Split at midpoint
-bLeg2.setSegmentSection(0, Pipe800);   // 0~50%
-bLeg2.setSegmentSection(1, Pipe600);   // 50%~100%
+bLeg2.SetSegmentSection(0, Pipe800);   // 0~50%
+bLeg2.SetSegmentSection(1, Pipe600);   // 50%~100%
 bLeg2.name = "JACKET_LEG_B1";
 ```
 

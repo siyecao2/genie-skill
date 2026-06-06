@@ -1,4 +1,5 @@
 # GeniE 分析结果解读指南 (Result Interpretation Guide)
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\`
 
 如何解读 GeniE 有限元分析结果，包括位移、应力、规范校核和屈曲评估。
 

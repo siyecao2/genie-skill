@@ -1,4 +1,5 @@
 # Best Practices for GeniE JS Scripting (V8.8-08)
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\`
 
 ## 1. Script Organization
 

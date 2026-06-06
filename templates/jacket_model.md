@@ -80,11 +80,11 @@ for (var i = 0; i < 4; i++) {
     legs[i].name = "LEG_" + (i+1);
     legs[i].section = LEG_BOT;
     // 分段变截面: 底部 LEG_BOT, 中部 CONE_LEG, 顶部 LEG_TOP
-    legs[i].divideSegmentAtRelative(1, 0.33);
-    legs[i].divideSegmentAtRelative(2, 0.66);
-    legs[i].setSegmentSection(1, LEG_BOT);
-    legs[i].setSegmentSection(2, CONE_LEG);
-    legs[i].setSegmentSection(3, LEG_TOP);
+    legs[i].divideSegmentAtEccentric(1, 0.33);
+    legs[i].divideSegmentAtEccentric(2, 0.66);
+    legs[i].SetSegmentSection(1, LEG_BOT);
+    legs[i].SetSegmentSection(2, CONE_LEG);
+    legs[i].SetSegmentSection(3, LEG_TOP);
 }
 
 // ============================================================
@@ -139,7 +139,7 @@ for (var k = 0; k < deckBeams.length; k++) {
 // ============================================================
 for (var i = 0; i < 4; i++) {
     var sp = SupportPoint(legBottoms[i]);
-    sp.fixation = SuperFixation;
+    sp.boundary = BoundaryCondition(Fixed, Fixed, Fixed, Free, Free, Free);
 }
 
 // ============================================================

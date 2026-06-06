@@ -1,4 +1,5 @@
 # Analysis - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreateAnalysisActivity\AnalysisActivity.htm`
 
 ## Analysis Creation & Setup
 

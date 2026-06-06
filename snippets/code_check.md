@@ -1,4 +1,5 @@
 # Code Check - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CheckCode\CodeCheck.htm + \Help\ReferenceDocuments\`
 
 ## CapacityManager Creation & Setup
 

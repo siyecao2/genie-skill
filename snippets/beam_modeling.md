@@ -1,4 +1,5 @@
 # Beam Modeling - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreateBeam\CreateBeam.htm`
 
 ## StraightBeam Creation
 
@@ -131,8 +132,8 @@ var bVar = StraightBeam(Point(0 m, 0 m, 0 m), Point(20 m, 0 m, 0 m));
 bVar.divideSegmentAtEccentric(Point(8 m, 0 m, 0 m));
 
 // Set different section for each segment
-bVar.setSegmentSection(0, PipeSection(0.610 m, 0.022 m));  // First segment
-bVar.setSegmentSection(1, PipeSection(0.508 m, 0.016 m));  // Second segment
+bVar.SetSegmentSection(0, PipeSection(0.610 m, 0.022 m));  // First segment
+bVar.SetSegmentSection(1, PipeSection(0.508 m, 0.016 m));  // Second segment
 bVar.name = "VARIABLE_SECTION_BEAM";
 ```
 

@@ -1,4 +1,5 @@
 # Boundary Conditions - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreateBoundaryCondition\CreateBoundaryCondition.htm`
 
 ## SupportPoint & BoundaryCondition (6 DOF)
 

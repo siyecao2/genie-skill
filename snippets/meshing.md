@@ -1,4 +1,5 @@
 # Meshing - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\Meshing\MeshActivity.htm + \Help\GuidingDocuments\Mesh_Guidance.pdf`
 
 ## MeshDensity Creation & Assignment
 

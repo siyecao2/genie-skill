@@ -135,7 +135,7 @@ edge4.CurveOffset = AlignedCurveOffset(frFlushTop, 0 m);
 // ============================================================
 for (var i = 0; i < 4; i++) {
     var sp = SupportPoint(colPositions[i]);
-    sp.fixation = SuperFixation;
+    sp.boundary = BoundaryCondition(Fixed, Fixed, Fixed, Free, Free, Free);
 }
 
 // ============================================================

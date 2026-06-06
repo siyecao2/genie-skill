@@ -1,4 +1,5 @@
 # GenieRules Reference (DNV SESAM GeniE V8.8-08)
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\GeniERules\GeniERules.htm`
 
 The `GenieRules` global object controls global modeling, meshing, and export behavior. Set rules before creating geometry.
 
@@ -94,7 +95,7 @@ GenieRules.Meshing.eliminateInternalEdges = false;
 ```javascript
 // === Default curve offset ===
 // Controls how beams curved along a GuideCurve are placed relative to the curve
-GenieRules.BeamCreation.DefaultCurveOffset = "centre";  // beam center on curve
+GenieRules.BeamCreation.DefaultCurveOffset = ReparameterizedBeamCurveOffset();  // beam center on curve
 // Options: "centre", "top", "bottom", "left", "right"
 
 // === Default curve orientation ===

@@ -1,4 +1,5 @@
 # Model Transforms - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreateTransformations\ModelTransformer.htm`
 
 ## ObjectNameMap Creation Pattern
 

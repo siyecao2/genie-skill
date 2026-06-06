@@ -94,10 +94,10 @@ leg.section = PIPE_610x25;
 leg.CurveOffset = AlignedCurveOffset(frFlushTop, 0 m);
 
 // 变截面分段
-leg.divideSegmentAtRelative(1, 0.33);
-leg.setSegmentSection(1, LEG_BOT);
-leg.setSegmentSection(2, CONE);
-leg.setSegmentSection(3, LEG_TOP);
+leg.divideSegmentAtEccentric(1, 0.33);
+leg.SetSegmentSection(1, LEG_BOT);
+leg.SetSegmentSection(2, CONE);
+leg.SetSegmentSection(3, LEG_TOP);
 ```
 
 ### 3.3 板 — Plate(4点)，不用 Plate.CreateByPoints

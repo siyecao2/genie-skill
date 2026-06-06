@@ -68,10 +68,10 @@ Jt1.name = "Jt1_Central";
 // ============================================================
 // 弦杆两端简支
 var sp1 = SupportPoint(chordP1);
-sp1.fixation = SupportFixation(1, 1, 1, 0, 0, 0);
+sp1.boundary = BoundaryCondition(Fixed, Fixed, Fixed, Free, Free, Free);
 
 var sp2 = SupportPoint(chordP2);
-sp2.fixation = SupportFixation(0, 1, 1, 0, 0, 0);
+sp2.boundary = BoundaryCondition(Free, Fixed, Fixed, Free, Free, Free);
 
 // ============================================================
 // 阶段 6: 载荷

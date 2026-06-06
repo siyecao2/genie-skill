@@ -1,4 +1,5 @@
 # Guiding Geometry - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\GuidePlane\GuidePlane.htm + Help\GuidingDocuments\Parametric\GeniE_parametric_models.pdf`
 
 ## GuidePlane Creation
 

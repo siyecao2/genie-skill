@@ -1,4 +1,5 @@
 # Compartment & Tank Loads - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreateCompartment\Compartment.htm`
 
 ## CompartmentManager Basics
 

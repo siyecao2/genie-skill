@@ -110,7 +110,7 @@ var supportPoints = [
 
 for (var i = 0; i < supportPoints.length; i++) {
     var sp = SupportPoint(supportPoints[i]);
-    sp.fixation = SuperFixation;
+    sp.boundary = BoundaryCondition(Fixed, Fixed, Fixed, Free, Free, Free);
 }
 
 // ============================================================
@@ -123,12 +123,7 @@ LCGrav.name = "Gravity";
 LCLift = LoadCase(0, 0, 0);
 LCLift.name = "LiftingLoad";
 
-// 转台偏心点力 (模拟吊机载荷)
-var liftForce = PointForce(Point(0, 0, topZ), Vector3d(0, 0, -500000));
-LCLift.add(liftForce);
-
-// 倾覆弯矩 (绕 X 轴)
-var overturningMoment = 2.0e+006 N*m;
+// 顶部点载荷 (通过 LoadCase UI: Loads → Explicit Load → Point Load 施加)
 
 // ============================================================
 // 阶段 10: 载荷组合

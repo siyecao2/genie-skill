@@ -1,4 +1,5 @@
 # Freeform Shells & Hull Surfaces - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreateSkinCurves\SkinCurves.htm + \Help\UserDocumentation\CreateSweepCurves\`
 
 ## SkinCurves - Lofting Through Guide Curves
 

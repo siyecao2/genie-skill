@@ -1,4 +1,5 @@
 # Materials & Sections - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreateMaterial\CreateMaterial.htm + Help\UserDocumentation\CreateSection\`
 
 ## MaterialLinear Constructor (Recommended)
 

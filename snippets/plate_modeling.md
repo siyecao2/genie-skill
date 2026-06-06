@@ -1,4 +1,5 @@
 # Plate Modeling - GeniE SESAM Snippets
+> **SESAM 源**: `GeniE V8.8-08 Help\UserDocumentation\CreatePlates\CreatePlates.htm + \Help\UserDocumentation\SkinCurves\SkinCurves.htm`
 
 ## Plate Creation - 4-Point Rectangular
 

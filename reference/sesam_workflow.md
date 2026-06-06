@@ -153,7 +153,27 @@ Sestra.exe my_model.fem
    - Automate design waves, load combinations, and batch runs
 ```
 
-## 6. File Format Reference
+## 6. 本地 SESAM 模块用户手册索引
+
+本机安装的其他 SESAM 模块均附用户手册，可从安装目录直接查阅：
+
+| 模块 | 手册文件 | 用途 |
+|------|---------|------|
+| **Sestra** | `Sestra V10.17-02\Doc\sestra_UM.pdf` | FEM求解器 |
+| **Sestra** | `Sestra V10.17-02\Doc\Sestra8\SestraGap_UM.pdf` | 间隙/接触分析 |
+| **Wadam** | `Wadam V10.3-02\Doc\Wadam_UM.pdf` | 波浪衍射/辐射 |
+| **Usfos** | `Usfos V9.0-00\Bin\Usfos_UM_06.pdf` | 非线性倒塌 |
+| **Usfos** | `Usfos V9.0-00\Bin\Xact_UM.pdf` | Usfos后处理 |
+| **Splice** | `Splice V8.1-00\Doc\Splice_UM.pdf` | 桩土分析 |
+| **Submod** | `Submod V3.3-01\Doc\Submod_UM.pdf` | 子模型 |
+| **Postresp** | `Postresp V7.2-03\Doc\Postresp_UM.pdf` | 响应后处理 |
+| **Mimosa** | `Mimosa V6.3-10\Doc\Mimosa_UM.pdf` | 系泊分析 |
+
+Sestra 自带 5 个示例：`Doc\Example1-5\` 含真实 `.inp` + `.FEM` 文件。
+
+---
+
+## 7. File Format Reference
 
 | Extension | Module | Description |
 |-----------|--------|-------------|

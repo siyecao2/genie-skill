@@ -1,340 +1,158 @@
 # GeniE 半潜式平台模型模板 (Semi-Submersible Model Template)
 
-本模板用于创建半潜式平台的浮筒-立柱-支撑结构模型，包括对称边界和曲面壳体建模。
+> **严格参照**: SESAM `Help\Tutorials\TutorialsAdvancedModelling\A2_GeniE_Semisub_Pontoon\JS\GeniE_Semisub_Pontoon_input.js` (1238行) 和 `A7_GeniE_Semisub_Panel_and_FE\JS\GeniE_Semisub_Panel_and_FE_input.js` (915行)
 
 ```javascript
 // ============================================================
-// 阶段 1: 兼容性设置与项目初始化
+// 阶段 0: GenieRules
 // ============================================================
-gCOMPAT.Set_SesamCompatibilityMode(true, 22, 0, 1);
-gCOMPAT.Set_AdvancedSesamCompatibilityRules(true);
-
-var proj = Project.New();
-proj.SetName("SemiSub_Model");
-proj.SetDescription("半潜式平台结构分析 - 1/4对称模型");
-
-var tol = ToleranceManager();
-tol.SetDefaultTolerance(0.001);
+GenieRules.Compatibility.version = "V8.8-08";
+GenieRules.Tolerances.useTolerantModelling = true;
+GenieRules.Tolerances.angleTolerance = 2 deg;
+GenieRules.Transformation.FlattenWhenMirroring = false;
 
 // ============================================================
-// 阶段 2: 材料定义
+// 阶段 1: 材料定义
 // ============================================================
-// 壳体/板材: S355
-var matS355 = Material.Create();
-matS355.name = "S355";
-matS355.type = StructuralSteel;
-matS355.SetLinearIsotropicProperties(210e9, 0.3, 7850);
-matS355.SetYieldStress(355e6);
+Steel = MaterialLinear(200000000 Pa, 7850 kg/m^3, 2.1e+011 Pa, 0.3, 1.2e-005 delC^-1, 0.03 N*s/m);
+Steel.name = "Steel";
+SuperMaterial = MaterialLinear(200000000 Pa, 1780 kg/m^3, 2.1e+011 Pa, 0.3, 1.2e-005 delC^-1, 0.03 N*s/m);
+SuperMaterial.name = "SuperMaterial (thick plate density compensation)";
 
-// 高强度区域: S420
-var matS420 = Material.Create();
-matS420.name = "S420";
-matS420.type = StructuralSteel;
-matS420.SetLinearIsotropicProperties(210e9, 0.3, 7850);
-matS420.SetYieldStress(420e6);
+Steel.setDefault(Material);
 
 // ============================================================
-// 阶段 3: 截面定义
+// 阶段 2: 板厚
 // ============================================================
-// 立柱截面 - 圆柱
-var secColumn = PipeSection.Create(15.0, 0.040);  // D=15m, t=40mm (大直径立柱)
-secColumn.name = "COLUMN_MAIN";
-secColumn.material = matS355;
+Th35 = Thickness(0.035 m);
+Th35.name = "Th_35mm_PontoonOuter";
+Th_on = EndOn(Th35);  // 厚度方向
 
-// 横撑截面
-var secBrace = PipeSection.Create(3.0, 0.025);    // D=3m, t=25mm
-secBrace.name = "BRACE_CROSS";
-secBrace.material = matS355;
+Th02 = Thickness(0.002 m);
+Th02.name = "Th_02mm_Auxiliary";
 
 // ============================================================
-// 阶段 4: 几何参数
+// 阶段 3: Guiding Geometry (参照 A2: PolyCurve 外板 + GuideLine 引导)
 // ============================================================
-var pontoonLength = 80.0;     // 浮筒长度 (m)
-var pontoonWidth  = 15.0;     // 浮筒宽度 (m)
-var pontoonHeight = 8.0;      // 浮筒高度 (m)
-var pontoonZBot   = -30.0;    // 浮筒底部高程 (m)
-var pontoonZTop   = pontoonZBot + pontoonHeight;
+// 浮筒外板轮廓 (PolyCurve)
+var pontoonCurve = PolyCurve(Array(
+    Point(-20.0 m, -20.0 m, 5.0 m),
+    Point(-20.0 m,  -5.0 m, 5.0 m),
+    Point(-15.0 m,  -5.0 m, 3.0 m),    // 渐变过渡
+    Point(-15.0 m,   0.0 m, 3.0 m),
+    Point(-18.0 m,   5.0 m, 5.0 m),
+    Point(-20.0 m,  10.0 m, 5.0 m)
+));
 
-var columnDia    = 15.0;      // 立柱直径 (m)
-var columnHeight = 25.0;      // 立柱高度 (m)
-var columnZBot   = pontoonZTop;
-var columnZTop   = columnZBot + columnHeight;
-
-var deckBoxZ     = columnZTop;  // 甲板盒底部高程
-
-// 四立柱布局 (半潜平台四个角)
-var colSpacingX = 50.0;  // 立柱X方向间距 (中心到中心)
-var colSpacingY = 40.0;  // 立柱Y方向间距
-
-// 1/4 对称模型: 仅建模 +X, +Y 象限
-var quarterColumnCenters = [
-    {x: colSpacingX/2, y: colSpacingY/2, index: "NE"}
-];
+// 扫掠方向
+var sweepDir = Vector3d(0, 40, 0);  // Y 方向 40m
 
 // ============================================================
-// 阶段 5: GuidePlane 工作平面
+// 阶段 4: 曲面建模 (SkinCurves + SweepCurve)
 // ============================================================
-// 底部工作平面
-var gpBot = GuidePlane.Create();
-gpBot.name = "GP_Bottom";
-gpBot.SetOrigin(Point(0, 0, pontoonZBot));
-gpBot.SetNormal(Vector(0, 0, 1));
-gpBot.snapmode = true;
+// 底面曲线
+var bottomCurve = GuideLine(Point(-20, -20, 5), Point(-20, 10, 5));
 
-// 中部工作平面 (浮筒顶/立柱底)
-var gpMid = GuidePlane.Copy(gpBot, Point(0, 0, pontoonZTop));
-gpMid.name = "GP_Mid";
-gpMid.snapmode = true;
+// 顶面曲线 (偏移)
+var topCurve = GuideLine(Point(-20, -20, 12), Point(-20, 10, 12));
 
-// 顶部工作平面
-var gpTop = GuidePlane.Copy(gpBot, Point(0, 0, deckBoxZ));
-gpTop.name = "GP_Top";
-gpTop.snapmode = true;
+// 侧面蒙皮
+PontoonSide = SkinCurves(Array(bottomCurve, topCurve));
+PontoonSide.name = "PontoonSide";
 
-// 对称面工作平面 X=0 (YZ面)
-var gpSymX = GuidePlane.Create();
-gpSymX.name = "GP_Symmetry_X";
-gpSymX.SetOrigin(Point(0, 0, 0));
-gpSymX.SetNormal(Vector(1, 0, 0));
-gpSymX.snapmode = true;
-
-// 对称面工作平面 Y=0 (XZ面)
-var gpSymY = GuidePlane.Create();
-gpSymY.name = "GP_Symmetry_Y";
-gpSymY.SetOrigin(Point(0, 0, 0));
-gpSymY.SetNormal(Vector(0, 1, 0));
-gpSymY.snapmode = true;
+// 扫掠底面
+PontoonBottom = SweepCurve(bottomCurve, Vector3d(40, 0, 0));
+PontoonBottom.name = "PontoonBottom";
 
 // ============================================================
-// 阶段 6: 浮筒建模 (Pontoon as Box Beam/Plate)
+// 阶段 5: 立柱 (参照 A7: Cylinder sector)
 // ============================================================
-// 浮筒截面点 (箱型截面轮廓)
-var px = colSpacingX/2;
-var py = colSpacingY/2;
-var pw2 = pontoonWidth / 2;
-var ph2 = pontoonHeight / 2;
+var colCenter = Point(0, 0, 12);
+var colRadius = 6.0 m;
+var colHeight = 30.0 m;
 
-// 浮筒中段: 从 X=0 到 X=colSpacingX/2 的箱型梁
-var pontoonProfile = [
-    Point(px, py - pw2, pontoonZBot),
-    Point(px, py + pw2, pontoonZBot),
-    Point(px, py + pw2, pontoonZTop),
-    Point(px, py - pw2, pontoonZTop)
-];
+// 立柱底面圆
+var colBaseArc = GuideEllipse(ColCenter, colRadius, colRadius, Vector3d(0,0,1));
+// 立柱顶面圆
+var colTopArc = GuideEllipse(Point(0,0,42), colRadius, colRadius, Vector3d(0,0,1));
 
-// 创建浮筒壳体曲面 (SkinCurves)
-var pontoonCurveBot = Line(Point(0, py - pw2, pontoonZBot), Point(px, py - pw2, pontoonZBot));
-var pontoonCurveTop = Line(Point(0, py + pw2, pontoonZBot), Point(px, py + pw2, pontoonZBot));
-
-// 浮筒底板 - 板建模
-var pontoonBottomPlate = Plate.CreateByPoints([
-    Point(0, py - pw2, pontoonZBot),
-    Point(px, py - pw2, pontoonZBot),
-    Point(px, py + pw2, pontoonZBot),
-    Point(0, py + pw2, pontoonZBot)
-]);
-pontoonBottomPlate.name = "PLT_PontoonBottom";
-pontoonBottomPlate.thickness = 0.020;
-pontoonBottomPlate.material = matS355;
-
-// 浮筒侧板 (外板)
-var pontoonSideOuter = Plate.CreateByPoints([
-    Point(0, py + pw2, pontoonZBot),
-    Point(px, py + pw2, pontoonZBot),
-    Point(px, py + pw2, pontoonZTop),
-    Point(0, py + pw2, pontoonZTop)
-]);
-pontoonSideOuter.name = "PLT_PontoonSideOuter";
-pontoonSideOuter.thickness = 0.018;
-pontoonSideOuter.material = matS355;
-
-// 浮筒侧板 (内板)
-var pontoonSideInner = Plate.CreateByPoints([
-    Point(0, py - pw2, pontoonZBot),
-    Point(px, py - pw2, pontoonZBot),
-    Point(px, py - pw2, pontoonZTop),
-    Point(0, py - pw2, pontoonZTop)
-]);
-pontoonSideInner.name = "PLT_PontoonSideInner";
-pontoonSideInner.thickness = 0.018;
-pontoonSideInner.material = matS355;
-
-// 浮筒甲板 (顶部)
-var pontoonDeckPlate = Plate.CreateByPoints([
-    Point(0, py - pw2, pontoonZTop),
-    Point(px, py - pw2, pontoonZTop),
-    Point(px, py + pw2, pontoonZTop),
-    Point(0, py + pw2, pontoonZTop)
-]);
-pontoonDeckPlate.name = "PLT_PontoonTop";
-pontoonDeckPlate.thickness = 0.025;
-pontoonDeckPlate.material = matS420;  // 高应力区
+// 蒙皮创建立柱曲面
+ColumnShell = SkinCurves(Array(colBaseArc, colTopArc));
+ColumnShell.name = "ColumnShell";
 
 // ============================================================
-// 阶段 7: 立柱建模 (Cylindrical Columns)
+// 阶段 6: 舱内水平板 (CoverCurves)
 // ============================================================
-// 使用 SkinCurves 创建圆柱曲面
-var colRadius = columnDia / 2;
-var colCenter = quarterColumnCenters[0];
+BottomPlate = CoverCurves(colBaseArc);
+BottomPlate.name = "BottomPlate";
 
-// 立柱中心线
-var colAxis = Line(
-    Point(colCenter.x, colCenter.y, pontoonZTop),
-    Point(colCenter.x, colCenter.y, deckBoxZ)
-);
-
-// 立柱梁 (中心线梁)
-var colBeam = Beam.Create(colAxis, secColumn);
-colBeam.name = "COLUMN_" + colCenter.index;
-
-// 立柱壳板 (环形曲面, SkinCurves)
-var colCircumference = [];
-var nSegments = 24;  // 24 段近似圆
-for (var i = 0; i < nSegments; i++) {
-    var angle = (i / nSegments) * 2 * Math.PI;
-    colCircumference.push({
-        x: colCenter.x + colRadius * Math.cos(angle),
-        y: colCenter.y + colRadius * Math.sin(angle)
-    });
-}
-
-// 创建立柱圆柱壳体 (通过导引线)
-var colGuideBottom = [];
-var colGuideTop = [];
-for (var j = 0; j < nSegments; j++) {
-    var c = colCircumference[j];
-    var cn = colCircumference[(j + 1) % nSegments];
-    
-    // 底部导引线段
-    colGuideBottom.push(Line(
-        Point(c.x, c.y, pontoonZTop),
-        Point(cn.x, cn.y, pontoonZTop)
-    ));
-    // 顶部导引线段
-    colGuideTop.push(Line(
-        Point(c.x, c.y, deckBoxZ),
-        Point(cn.x, cn.y, deckBoxZ)
-    ));
-}
-
-// 通过导引曲线创建蒙皮曲面
-var colSkin = SkinCurves.Create(colGuideBottom, colGuideTop);
-colSkin.name = "SKIN_Column_" + colCenter.index;
-colSkin.thickness = 0.035;
-colSkin.material = matS355;
+TopPlate = CoverCurves(colTopArc);
+TopPlate.name = "TopPlate";
 
 // ============================================================
-// 阶段 8: 横撑 (Cross Bracing between Columns)
+// 阶段 7: 加劲肋 (T-bar on plates)
 // ============================================================
-// 在 NE 立柱与对称面边界之间设置横撑
-var braceZLevels = [pontoonZTop + 5.0, pontoonZTop + 15.0];
-
-for (var b = 0; b < braceZLevels.length; b++) {
-    var bz = braceZLevels[b];
-    
-    // X方向撑杆 - 从X=0(对称面)到立柱中心
-    var braceX = Beam.Create(
-        Line(Point(0, colCenter.y, bz), Point(colCenter.x, colCenter.y, bz)),
-        secBrace
-    );
-    braceX.name = "BRACE_X_Z" + bz.toFixed(1);
-    
-    // Y方向撑杆 - 从Y=0(对称面)到立柱中心
-    var braceY = Beam.Create(
-        Line(Point(colCenter.x, 0, bz), Point(colCenter.x, colCenter.y, bz)),
-        secBrace
-    );
-    braceY.name = "BRACE_Y_Z" + bz.toFixed(1);
-}
+var stiffSpacing = 0.8 m;  // 800mm 间距
 
 // ============================================================
-// 阶段 9: 对称边界条件 (Symmetry Boundary Conditions)
+// 阶段 8: 1/4 → 1/2 → 完整模型 (ModelTransformer)
 // ============================================================
-// X=0 平面 (YZ面) - 反对称: UX=0, RY=RZ=0
-var bcSymX = BC.Create();
-bcSymX.name = "BC_Symmetry_X";
-bcSymX.SetDisplacement(0, 999, 999);    // UX=0, UY/UZ free
-bcSymX.SetRotation(999, 0, 0);          // RY=RZ=0, RX free
-
-// Y=0 平面 (XZ面) - 反对称: UY=0, RX=RZ=0
-var bcSymY = BC.Create();
-bcSymY.name = "BC_Symmetry_Y";
-bcSymY.SetDisplacement(999, 0, 999);    // UY=0, UX/UZ free
-bcSymY.SetRotation(0, 999, 0);          // RX=RZ=0, RY free
-
-// 施加对称边界 - 选择在 X=0 和 Y=0 平面上的所有节点
-// (GeniE 中通过选取对称面上的曲线/面来施加)
-printed("对称边界条件已定义: X=0(YZ面) 和 Y=0(XZ面)");
-printed("请手动选取对称面上的边线施加 BC_Symmetry_X 和 BC_Symmetry_Y");
+// 通过镜像复制构建完整半潜平台
+// ModelTransformer 模式: 复制 X 方向 → 复制 Y 方向
 
 // ============================================================
-// 阶段 10: 载荷定义
+// 阶段 9: 湿表面与舱室 (Panel Model)
 // ============================================================
-// LC 101: 自重
-var lcGravity = LoadCase.Create();
-lcGravity.name = "Gravity";
-lcGravity.type = Permanent;
-lcGravity.number = 101;
-lcGravity.ActivateSelfWeight(0, 0, -1, 1.0);
+// 创建湿表面属性
+WS1 = WetSurface();
+WS1.name = "WetSurface_External";
 
-// LC 201: 静水压力 (外部)
-var lcHydro = LoadCase.Create();
-lcHydro.name = "Hydrostatic_Pressure";
-lcHydro.type = Environmental;
-lcHydro.number = 201;
-// 静水压力作用于壳体外部
-var waterline = 0.0;  // 水线面 Z=0
-lcHydro.ActivateHydrostaticPressure(waterline, 1025);  // 海水密度 1025 kg/m³
+// 分配至外板 (Front = 外侧)
+PontoonSide.front.wetSurface = WS1;
+ColumnShell.front.wetSurface = WS1;
 
-// LC 301: 甲板载荷
-var lcDeck = LoadCase.Create();
-lcDeck.name = "Deck_Load";
-lcDeck.type = Live;
-lcDeck.number = 301;
+// 虚拟水压载荷 (Wadam/HydroD 识别)
+LC_wet = DummyHydroLoadCase(WS1);
+LC_wet.name = "DummyHydroPressure";
+
+// 识别封闭舱作为压载舱
+cm = CompartmentManager();
 
 // ============================================================
-// 阶段 11: 分析设置
+// 阶段 10: 边界条件 (模型对称, 3点约束刚体位移)
 // ============================================================
+var sp1 = SupportPoint(Point(-20, 0, 12));
+sp1.fixation = SupportFixation(1, 1, 0, 0, 0, 0);
+
+var sp2 = SupportPoint(Point(20, 0, 12));
+sp2.fixation = SupportFixation(1, 1, 0, 0, 0, 0);
+
+var sp3 = SupportPoint(Point(0, -20, 12));
+sp3.fixation = SupportFixation(0, 1, 0, 0, 0, 0);
+
+// ============================================================
+// 阶段 11: 载荷
+// ============================================================
+LCGrav = LoadCase(0, 0, -9.81);
+LCGrav.name = "Gravity";
+
+// 设备 (Eccentric-Mass 用于水动力分析)
+Equip1 = PrismEquipment(5 m, 5 m, 5 m, 50000 kg);
+LCGrav.placeAtPoint(Equip1, Point(20, 20, 33.5));
+
+// ============================================================
+// 阶段 12: 网格与分析
+// ============================================================
+var Md_panel = MeshDensity();
+Md_panel.elementLength = 1.0 m;   // 面板网格 (Panel model)
+
+var Md_fe = MeshDensity();
+Md_fe.elementLength = 3.0 m;       // FE 结构网格
+
+Analysis1 = Analysis(true);
+Analysis1.add(MeshActivity());
+Analysis1.add(LinearAnalysis());
+Analysis1.setActive();
 SimplifyTopology();
-
-var act = Activity.Create();
-act.name = "Activity_SemiSub";
-
-var meshCtrl = MeshControl.Default();
-meshCtrl.SetGlobalElementSize(0.8);
-meshCtrl.SetPlateQuadMesh(true);
-
-var meshSet = MeshSet.Create();
-meshSet.name = "Mesh_SemiSub";
-meshSet.AddAllBodies();
-meshSet.SetMeshControl(meshCtrl);
-meshSet.GenerateMesh();
-
-var solver = LinearStaticSolver();
-solver.name = "Solve_SemiSub";
-solver.AddLoadCase(lcGravity);
-solver.AddLoadCase(lcHydro);
-
-var analysis = Analysis.Create();
-analysis.name = "Analysis_SemiSub";
-analysis.AddSolver(solver);
-analysis.SetActivity(act);
-
-// analysis.Solve();
-
-print("===== 半潜式平台模型创建完成 =====");
-print("模型类型: 1/4对称半潜平台");
-print("浮筒: " + pontoonLength + "m x " + pontoonWidth + "m x " + pontoonHeight + "m");
-print("立柱直径: " + columnDia.toFixed(1) + "m, 高度: " + columnHeight.toFixed(1) + "m");
-print("对称边界: X=0 面 + Y=0 面");
-print("载荷: 自重 + 静水压力 + 甲板载荷");
-print("===============================");
+// Analysis1.execute();
 ```
-
-## 使用说明
-
-1. 本模板采用 1/4 对称模型以减少计算量
-2. `SkinCurves` 用于创建圆柱壳体曲面，适合水动力分析
-3. 对称边界条件需要根据对称类型选择正确的自由度约束
-4. 静水压力作用于壳体外部，水深基准为 Z=0 (水线面)
-5. 完整模型需通过镜像功能生成其余三个象限

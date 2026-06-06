@@ -265,7 +265,8 @@ for (var h = 0; h < hotSpots.length; h++) {
 
 ```javascript
 // 生成标准分析报告
-var report = Report.Create();
+// 导出到 Xtract 进行高级后处理
+// Xtract 读取 Sestra .Rxx 结果文件
 report.name = "Analysis_Report_ULS";
 report.SetTitle("结构分析报告 - 极限状态");
 report.SetAuthor(proj.author);

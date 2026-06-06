@@ -24,7 +24,7 @@ if (!gCOMPAT.IsSesamCompatibilityModeActive()) {
 ## 2. 默认属性检查 (Defaults Assignment)
 
 - [ ] **所有梁已赋予截面**  
-  确保每个 Beam 对象都通过 `Beam.Create(line, section)` 或后续 SetSection 获得了截面
+  确保每个 Beam 对象都通过 `StraightBeam(Point, Point)` 获得了截面
 
 - [ ] **所有板/壳已赋予材料和厚度**  
   确保每个 Plate/SkinCurves 对象的 thickness 和 material 属性已设置

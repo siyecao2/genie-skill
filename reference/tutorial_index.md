@@ -28,20 +28,25 @@
 - **内容**: Guiding Geometry 引导几何 → Upper/Lower Chord(曲梁) → Column Frame → 完整模型 → 雪+风载荷 → 结构分析 → 结果 → Redesign and Reanalysis(重设计+重分析)
 - **特点**: 曲梁建模、重设计循环示范
 
-### B5: Topside with Detailed Modelling of Joint
+### B5: Topside with Detailed Modelling of Joint ✅ **完整读取** (60页全)
 - **页数**: 60 | **版本**: V8.2
-- **内容**: Meshing Rules → Guiding Geometry → Cellar Deck/Main Deck/Columns → Deck Rows (XZ面1-6 + YZ面A-E) → Loads → Boundary Conditions → Static Analysis → Results → Save → **Detailed Joint Modelling**（梁模型转板壳） → FE Mesh → Combined Beam+Shell分析
-- **特点**: 18步完整流程、梁→壳转换、合并模型分析
+- **截面**: NSF_EN.KZY库导入HE400A/HE600A + 4个Pipe截面(P_leg_norm_15/25, P_leg_large_35, P_brace_20)
+- **材料**: Mat1(2E8 yield) / PlateMat(同Mat1但厚度0.015m)
+- **步骤**: Meshing Rules(Round off Mesh Density) → Guide Plane(XY平面At 4, 5x5格) → Cellar Deck(HE600A) → Copy 6m→Main Deck(改HE400A) → Columns: 分段(0.5m+1m+3.5m+5m)/Pipe截面+P_leg_large_35+Cone(D1=1m D2=0.5m DynamicThickness=1) → 镜像X+复制Y生成4根柱 → Deck Rows 1-6(XZ面, 管+工字梁+对角撑含FB50X10) → Deck Rows A-E(YZ面类似) → Equipment(3×30t+2×50t点质量+线载荷) → 显式载荷 → 组合(LC_total=Gravity 1.0+Equip 1.0) → 边界(4根柱底全固) → Analysis → 结果 → **Joint转换**: beam→shell(Convert joint to shells/Smart divide/非结构再连) → 板厚赋值+网格密度0.1m → FE Mesh → Combined Beam+Shell分析(同载荷)
 
 ### B6: Member Code Checking
 - **页数**: 29 | **版本**: V8.2
 - **内容**: Import B5模型 → Capacity Manager + Capacity Members → Add Run(API WSD) → 修改Buckling数据 → Generate Code Check Loads → 执行校核 → 理解forces/moments → Redesign失败构件 → Rerun分析+校核 → Create Code Check Report
 - **特点**: 构件校核全流程、重设计循环、报告生成
 
-### B8: Piled Jacket Analysis
+### B8: Piled Jacket Analysis ✅ **完整读取** (52页全)
 - **页数**: 52 | **版本**: V8.2
-- **内容**: New Workspace + Sections/Thicknesses/Materials → Guide Planes → Legs → Bracings → 改变Leg上部截面 → Vertical Stubs at Top → Conductor Supports + Conductors → Simplified Topside → Sets → Mesh Property for Topside Plates → **Piles** → **Soil** → **Location**(环境) → Current and Waves → Wave Load Condition → Hydro Properties → Loads → Wave Load Analysis → Load Combinations → Run → Results
-- **特点**: 22步、40m水深4腿导管架中含桩土+波浪载荷完整分析 (需 Wajac+Splice+Sestra license)
+- **内容**: 22步完整导管架建模分析流程
+- **截面**: Pipe06(0.6x0.01)/Pipe12(1.2x0.03)/Pipe16(1.6x0.03)/Pipe21(2.1x0.08)/Pipe22(2.2x0.08)/Pipe32(3.2x0.09)
+- **板厚**: Th2(0.2m)/Th4(0.4m)/Th6(0.6m)
+- **材料**: Steel(3.56E5 kPa yield) / PlateMaterial(0.785 t/m³ 低密度补偿厚板)
+- **步骤**: 2个Guide Plane(138m+0m) → Legs(Pipe32)→ 7个高程Bracings(Snap Plane F11交替/水平5/40/75/105/135/138/143m) → 弦侧边斜撑 → Leg分段: Divide at 80m→上部Pipe22+3m锥段(Dynamic Thickness=1取大壁厚) → 镜像复制其余腿 → 顶部增设5m Stub → Conductor支撑架(短横梁Y=3m) + 3根NonStructural Conductor(Pipe06,下部固定) → Simplified Topside(3层甲板+墙+12个120t点质量) → 4个Set(Jacket/Conductors/Legs/Topside) → 2m网格密度 → Pile入土75m(Pipe21,堆尖无限长边界) → **6层Soil**(Sand1/Sand1/Sand2/Clay3/Clay4/Sand5含1/1/1/3/15/30子层) → API1987 p-y / API1993 t-z / API1993 q-z → Scour(总冲刷0.5m+局部1m+坡度20m) → Location(水深124m/水密度1.025/静止水位线+124m) → 电流剖面(与波同向) → 规则波集(振幅15m/周期10s/起始角-60°) → Wave Load Condition(Stokes 5th+CalmSea) → Hydro(Morison Cd=0.7 Cm=2; Flooding=1全进水; 海洋生物0.05m到海底) → 5个LoadCase(Gravity+WindN/E/S/W 5/7/6/9 kPa) → Wave Load Analysis(24步/5°/最大剪力+倾覆力矩) → **8个LoadCombination**(4方向×2极值, WLC 1.6+Buoyancy 1.0+Gravity 1.2+Wind 1.6) → 后台运行Wajac→Sestra→Gensod→Splice → 结果展示
+- **特点**: 需Wajac+Splice+Sestra license; 非线性桩土分析不支持Smart Load Combinations
 
 ### B9: Jacket Member and Joint Code Checking
 - **页数**: 23 | **版本**: V8.2
@@ -92,10 +97,10 @@
 - **内容**: 波纹舱壁建模与评估
 - **特点**: 正交各向异性材料方法评估波纹舱壁
 
-### A7: Semisubmersible Panel and Structural (FE) Modelling
+### A7: Semisubmersible Panel and Structural (FE) Modelling ✅ **完整读取** (42页全)
 - **页数**: 42 | **版本**: V8.2
-- **内容**: 13步: Guiding Geometry for Pontoon → Column → **Panel Model**(T1.FEM) → Full Model → **Morison Model**(T2.FEM) → Derrick → Compartments → Equipments → Support Points → **FE Structural Model**(T3.FEM)
-- **特点**: 同一概念模型生成三种分析模型：Panel+Morison+Structural FE
+- **材料**: Steel(2E8 yield, 7850kg/m³) / SuperMaterial(1780kg/m³密度补偿厚板, 用于简化加筋板建模)
+- **步骤**: Guiding Geometry → Pontoon → Column(圆锥过渡) → **T1.FEM Panel模型**: 创建Wet Surface WS1 → Dummy Hydro Pressure载荷(标识水动力面) → 面板网格 → 导出 → **完整模型**: 上下甲板+竖壁 → Guide Curves + Cover圆形板 → Girders(Y向) + 9 Stiffeners(X向间距2.736m) → Flush at top → 1/4镜像→1/2 → **T2.FEM Morison模型**: 2水平柱间支撑(Pipe1) → SE=2 → 导出 → **Derrick**: 4腿+斜撑+水平杆+对角撑(Pipe2/Pipe3)+4×2E5kg点质量 → **Compartments**: Compartment Manager自动识别封闭舱 → 每个液舱单独LC → Dummy Hydro Pressure → **Equipments**: 4×Prismatic Equipment@(±20,±20,33.5) → 设为Eccentric-Mass → **Support Points**: 3点约束浮体刚体位移(旋转自由) → **T3.FEM**: 3m全局网格/SE=3 → 导出
 
 ### A8: Transportation With Contact
 - **页数**: 17 | **版本**: V8.3
@@ -107,10 +112,9 @@
 - **内容**: 创建10x10x10空间框架 → 选定梁赋予 Truss(Pipe1=compression only, Pipe2=tension only) → 非线性拉压分析 → 结果展示
 - **特点**: Truss单元应用、Compression-only(脱开)和Tension-only(拉索)
 
-### A10: Wind Loads
+### A10: Wind Loads ✅ **完整读取** (33页全)
 - **页数**: 33 | **版本**: V8.4
-- **内容**: Import Jacket+Topside → Wind Profiles(Operating+Storm) → Wind on Beams(由Wajac按Morison方程计算) → Wind on Equipments(GeniE内部计算) → Load Combinations → Structural Analysis(风+浪组合) → Wind on Plates(GeniE) → Wind as Point Loads on Joints
-- **特点**: V8.4新增风载荷功能、Wajac+GeniE联合计算
+- **内容**: Import Jacket+Topside(SE30_Jacket.xml) → Wind Profiles: Wind_OPR(25m/s Extreme API 21) / Wind_Storm(50m/s) 方向与波同向 → Wajac风力计算: Air Drag Cdy=Cdz(常数系数) → 6波浪×风剖面组合(3波+Wind_Storm / 3波+Wind_OPR) → Wajac 36步@10° → **GeniE设备风力**: Generator(100t, 10×4×5m)/Pump1(75t, 4×20×5m)/Pump2(75t)/Dummy1(48×1×6m)/Dummy2(25×1×5m, 旋转90°) → Equipment Side Loads(Wind Pressure Constant + Drag coefficient + Suction factor) → Pump1被Pump2遮挡(Drag=0.1) → Dummy设备代表非结构板 → 6风载荷工况 × 3方向 × 2工况 = WindOPR/STM 00/37/90 → **6 LoadCombinations**(WLC 1.6+Buoyancy+Wind 1.6) → Storm工况设Design Condition(代码校核需要) → 风在Plates上(WindOnPlate/Constant Wind Pressure) → 风作为Joints点载荷(Dummy3 + LoadInterface + 6个Joints)
 
 ### A11: Conditional Regenerate Mesh
 - **页数**: 23 | **版本**: V8.2
@@ -132,11 +136,14 @@
 - **内容**: PISA JIP研究成果 → 大直径单桩4种土弹簧: P-Y(侧向), DM(分布弯矩), BS(基底水平力), BM(基底弯矩) → 手动输入P-Y/DM/BS/BM曲线 → T-Z/Q-Z按API2014自动计算 → 40层土 → Split V8.0
 - **特点**: V8.4新增大直径单桩曲线(超越传统P-Y/T-Z/Q-Z)
 
-### A16: Conversion of Tubular Joints
+### A16: Conversion of Tubular Joints ✅ **完整读取** (24页全)
 - **页数**: 24 | **版本**: V8.8
-- **内容**: 基于完整导管架模型(预定义Jt1/Jt2/Jt3在-15.0m高程) → Convert joint(s) to shells → 无重叠支杆(Jt1/Jt2)+重叠支杆(Jt3/11根支杆/3组重叠) → 全球网格(应力筛选) + 精化区网格(DNV RP-C203 Ch4.2疲劳)
-- **配套文件**: `Tubular_joint_initial.gnx` / `Tubular_joint_completed.gnx` / `Tubular_joint_all_completed.gnx`
-- **需要模块**: GeniE V8.8-02 + CGEO + Wajac/Splice/Sestra/Xtract
+- **内容**: 基于3个预定义节点(Jt1/Jt2/Jt3@-15m)的完整导管架
+- **Jt1疲劳筛选**: Select connected beams → Convert joint → **7参数设置**: A.NonStructural / B.200mm全局 / C.Patch Surf Quad Mesher(推荐, AFront将被移除) / D.Brace Split=3.9m / E.Chord Split=7.2m(3×直径) / F.Set名=Jt1_Shells / G.无精化过渡 → LV_200(Linear Edge Growth 1.05) → PSQ网格 → ALT+M生成
+- **Jt2精化疲劳**: 同上参数 + Create Refinement Zones / Transition Zones → 2层×20mm(Total Zone Width=-40mm) → 自动创建Jt2RefinementZones/Jt2TransitionZones → 80mm过渡网格 → View_model Set(排除非结构) → 结果: 位移0.532m(Jt1一致)
+- **Jt3重叠支杆**: 11根支杆含3组重叠 → Brace Split=2.4m(因Bm588截面变化无锥段、Bm2219长约1.826m) → 识别Through Braces(Bm700/Bm808/Bm583) → 重叠处自动无精化层 → 1层20mm(可能处) → Conditional Regenerate Mesh → 8节点全转换(Tubular_joint_all_completed.gnx) → 结果在GeniE(Xtract)
+- **配套文件**: `Tubular_joint_initial.gnx` → `Tubular_joint_completed.gnx` → `Tubular_joint_all_completed.gnx`
+- **技术要点**: DNV RP-C203 Ch4.2网格密度=0.1√(r·t), 至少1层径向方形; 弦杆/支杆须截面连续; Overlap自动识别Through Brace; Patch Surf Quad > Advanced Front Quad(2024年将移除)
 
 ---
 

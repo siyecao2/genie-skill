@@ -280,3 +280,105 @@ CapacityManager.runAll();
 | CSR BC&OT Panel | `PanelCodeCheckRun` | - | - |
 
 > **注**: ISO 对于非管状构件、NORSOK 对于非管状构件都会**自动回退**使用 EN 1993-1-1。API 则仅适用于圆管构件（接头校核也仅含管节点）。
+
+---
+
+## 附录A: API WSD 输出字段命名规范
+
+以下是API WSD校核所有可输出字段的完整说明（来自 API_WSD.pdf 第18-24页）。
+
+### Member Check 完整输出字段
+
+| 字段 | 说明 | 对应公式 |
+|------|------|---------|
+| UfTot | 控制UF | — |
+| ufShear | 剪力UF | 3.2.4节 |
+| ufTorsion | 扭转UF | 3.2.4.b节 |
+| uf3251 | 静水压力UF | Eq.3.2.5-1 |
+| uf3313 | 轴压+弯曲UF | Eq.3.3.1-3 |
+| uf3313ax | uf3313中轴力贡献 | Eq.3.3.1-3 |
+| uf3313mo | uf3313中弯矩贡献 | Eq.3.3.1-3 |
+| uf3312 | 轴力+弯曲(含Cm) | Eq.3.3.1-2 |
+| uf3314 | 轴压+弯曲(含Cm) | Eq.3.3.1-4 |
+| uf3341/2/3 | 轴压+静水压力 | Eq.3.3.4-1/2/3 |
+| uf3331 | 轴拉+静水压力 | Eq.3.3.3-1 |
+| uf3315 | 桩承载力 | Eq.3.3.1-5 |
+| uf3316 | 桩承载力 | Eq.3.3.1-6 |
+| D/t | 径厚比 | — |
+| Fa | 轴向容许应力 | — |
+| Fb | 弯曲容许应力 | — |
+| Fv | 梁剪切容许应力 | — |
+| Fvt | 扭转剪切容许应力 | — |
+| Fhe | 弹性环向屈曲应力 | — |
+| Fhc | 临界环向屈曲应力 | — |
+| Fxc | 非弹性局部屈曲应力 | — |
+| Fey'/Fez' | 欧拉应力(y/z轴) | — |
+| Cmy/Cmz | 弯矩放大系数 | — |
+| SFh/SFxt/SFxc/SFb | 安全系数（静水/轴拉/轴压/弯曲） | — |
+| sFac | 应力增加系数（按设计工况） | — |
+| GeomCheck | 几何限值检查: D/thk<300, thk≥6mm | — |
+
+### Cone Check 完整输出字段
+
+| 字段 | 说明 |
+|------|------|
+| uffTotC/uffTotT | 总应力UF (锥侧/管侧) |
+| ufnomiC/ufnomiT | 名义应力UF (锥侧/管侧) |
+| ufHoop | 环向应力UF |
+| Alpha | 半锥角 |
+| Dc/tc/D/t | 锥/管直径和壁厚 |
+| fb'/fb'c | 节点局部弯曲应力(管侧/锥侧) |
+| fh' | 径向不平衡线载荷引起的环向应力 |
+
+### Joint Check (API 2002) 完整输出字段
+
+| 字段 | 说明 |
+|------|------|
+| uf411 | 受拉接头UF | Eq.4.1-1 |
+| uf4315a | 简单接头UF | Eq.4.3.1-5a |
+| uf4315b | 简单接头UF | Eq.4.3.1-5b |
+| ufPperp | 重叠支杆垂直分量UF | — |
+| Quax/Quipb/Quopb | 极限强度因子(轴向/面内弯/面外弯) | — |
+| Qfax/Qfipb/Qfopb | 弦杆载荷因子(轴/面内弯/面外弯) | — |
+| Ytfact/Xfact/Kfact/KTTfact/KTKfact | 支杆分类系数 | — |
+| oveCap/oveRat | 重叠承载/比率 | — |
+| tw | 焊缝喉厚或较薄支杆厚度 | — |
+
+### Joint Check (API 2005) 完整输出字段
+
+| 字段 | 说明 |
+|------|------|
+| uf435 | 主校核UF | Eq.4.3-5 |
+| uf435ax | uf435中轴力贡献 | — |
+| uf435mo | uf435中弯矩贡献 | — |
+| ufMinCapacity | 最小容量UF (当选用"50%有效强度"时) | 4.2.3节 |
+| uf435mod | 重叠节点修正UF(穿透支杆作为弦杆) | 4.4节 |
+| uf435ove | 重叠支杆UF(穿透支杆端) | 4.4节 |
+| ufshear | 重叠节点剪力容量UF | — |
+| gap_D | gap/D比值 | — |
+| ufipb/ufopb | 面内/面外弯曲UF贡献 | — |
+
+### 桩校核关键选项
+
+| 选项 | 值 | 说明 |
+|-----|-----|------|
+| pmBeam | 作为普通梁校核 | — |
+| pmPile | 强制按桩校核 | Eqs.3.3.1-5, 3.3.1-6 |
+| pmFromStructure | 根据Pile概念自动识别 | 默认 |
+
+### Flooding (进水状态)
+
+- From Structure: 使用Beam概念中Hydro属性定义
+- Flooded: 强制设为进水
+- Not Flooded: 强制设为不进水
+
+### 节点灌浆状态 (API 2005)
+
+| 选项 | 说明 |
+|------|------|
+| From Structure | 自动检测：内梁类型Disconnected→不灌浆; Fully Coupled/BeamSpring→双壁灌浆; 无内梁→不灌浆 |
+| Fully grouted | 弦杆满灌浆 |
+| Double-skin | 双壁灌浆(可手动设Tp) |
+| Not grouted | 按简单节点校核 |
+
+> 注意: 灌浆节点**不要**使用 "Calculate required thickness" 选项。

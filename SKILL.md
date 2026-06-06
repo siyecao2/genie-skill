@@ -100,6 +100,8 @@ description: "SESAM GeniE 海洋工程结构建模专家。当你需要进行导
 | 高级梁建模/变截面/管节点/偏心/铰接/屈曲 | `snippets/advanced_beam.md` |
 | 舱室载荷/Compartment/液舱/进水/散货 | `snippets/compartment_loads.md` |
 | 自由曲面/蒙皮/Sweep/放样/船体外板 | `snippets/freeform_shells.md` |
+| 参数化建模/JScript编程/Excel交互/DynamicSet | `reference/parametric_modeling.md` |
+| 管节点壳疲劳/ConvertJoints/DNV RP-C203网格 | `reference/shell_fatigue.md` |
 | 导管架建模 (Jacket) | `templates/jacket_model.md` |
 | 上部组块建模 (Topside) | `templates/topside_model.md` |
 | 半潜平台建模 (Semisub) | `templates/semisub_model.md` |

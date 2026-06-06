@@ -266,3 +266,82 @@ ana
         .addActivity(LinearAnalysis())
     .execute();
 ```
+
+---
+
+## 深度网格指南 (Based on Mesh_Guidance_GeniE_v5_0.pdf, 65 pages)
+
+### 12种网格控制全貌
+
+| # | 控制项 | 说明 |
+|---|--------|------|
+| 1 | Element Type | Shell vs Membrane, 1st/2nd order |
+| 2 | Mesh Density | 全局/局部单元尺寸 |
+| 3 | Mesh Gradients | 细-粗网格过渡控制 |
+| 4 | Mesh Algorithms | Quad vs Advancing Front Paver |
+| 5 | Feature Edges | 人工插入网格线 |
+| 6 | Prioritized Meshing | 控制网格生成顺序 |
+| 7 | Simplify Topology | 自动简化拓扑线（默认开启） |
+| 8 | Split Periodic Geometry | 360度柱壳自动分割 |
+| 9 | Remove Internal Vertices/Edges | 消除孔边多余顶点/边 |
+| 10 | Mesh Locking | 锁定局部网格不随模型更新 |
+| 11 | Custom Program Defaults | JS文件自定义全局网格默认值 |
+| 12 | Useful Tools | Free Edges检查/Locate FE/元素质量数据检查 |
+
+### Simplify Topology
+
+双击板输入拓扑模式，程序自动简化内部拓扑线。也可手动执行：
+`Tools > Structure > Geometry > Simplify Topology`
+
+### 优先网格 (Prioritized Meshing)
+
+```javascript
+// 定义4个不同的网格优先级
+Mpri1 = MeshPriority();
+Mpri1.include(Set_criticalRegion);     // 关键区域先画
+Mpri2 = MeshPriority();  
+Mpri2.include(Set_transitionZone);
+Mpri3 = MeshPriority();
+Mpri3.include(Set_coarseRegion);
+// 在Analysis中激活
+Analysis1.step(1).meshPriorities = Array(Mpri1, Mpri2, Mpri3);
+```
+
+### 网格锁定 (Mesh Locking)
+
+适合腹板框架等重复部件：调好网格→选中部件→右键Lock→复制含锁定网格
+
+```javascript
+// Lock mesh on a plate
+Pl1.lockMesh();
+// Label mesh lock coordinates along topology edges
+Pl1.labelMeshLockCoordinates();
+```
+
+### 自定义程序默认值
+
+创建 `MyRules.js` 文件存放自定义网格规则：
+```javascript
+GenieRules.Meshing.activate(mpMaxAngle, mpSplit, true);
+GenieRules.Meshing.setLimit(mpMaxAngle, mpSplit, 145 deg);
+GenieRules.Meshing.activate(mpMaxRelativeJacobi, mpSplit, true);
+GenieRules.Meshing.setLimit(mpMaxRelativeJacobi, mpSplit, 4);
+```
+然后在启动GeniE时引用此文件。
+
+### Sestra 元素质量判据
+
+Sestra在分析前会自动拒绝不满足以下条件的单元：
+- **三角形**: `100*A - L² < 0` (A=面积, L=最长边)
+- **四边形**: `25*C - D < 0` (C=短对角线, D=长对角线)
+不合格单元会在Message标签中列出。
+
+### 网格密度建议
+
+| 场景 | 推荐设置 |
+|------|---------|
+| 初步筛选 | 100mm全局, Advancing Front Quad |
+| 精细疲劳 | 精化区: 0.1*√(r·t) 按DNV RP-C203 Ch4.2 |
+| 过渡区 | Linear Edge Meshing + Growth Factor 1.05 |
+| 管节点 | Advancing Front Quad (优于Paver) |
+| 360度锥壳 | Split Periodic Geometry 或分4×90° |

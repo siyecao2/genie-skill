@@ -48,6 +48,72 @@ description: "SESAM GeniE 海洋工程结构建模专家。当你需要进行导
    - Usfos 非线性倒塌分析、Splice 桩土分析
    - Xtract 后处理、Framework 批处理
 
+## When to Use This Skill
+
+触发条件（用户提到以下任一项即触发）：
+- 关键词：GeniE、genie、SESAM、DNV、海洋工程结构
+- 结构类型：导管架、jacket、上部组块、topside、半潜平台、semisub、自升式、jack-up
+- 操作：结构建模、截面定义、beam、plate、shell、FE网格、规范校核、code check
+- 分析：线性静力、特征值、动力、地震、桩土分析、张力/压缩
+
+适用场景（本 Skill 覆盖）：
+- 导管架/上部组块/半潜/自升式平台结构建模
+- 型钢截面与板壳结构的定义与赋值
+- 波浪/风/流/设备/舱室载荷施加
+- Sestra 有限元求解设置与执行
+- AISC/API/EN1993/ISO19902/Norsok 规范校核
+- 桩土分析（Pile-Soil）与 Splice 协同
+- 概念设计到详细设计的全流程
+
+不适用场景（应路由到其他 Skill）：
+- 岩土连续介质分析 → 用 **FLAC3D Skill**
+- 颗粒离散元分析 → 用 **PFC Skill**
+- Sestra 单独求解 → 用 **Sestra MCP 工具**
+- Usfos 非线性倒塌 → 用 **Usfos MCP 工具**
+
+## What to Ask User
+
+建模前必须向用户确认以下信息（缺少则不应开始生成脚本）：
+
+1. **结构类型**：导管架 / 上部组块 / 半潜 / 自升式 / 其他？
+2. **建模方式**：
+   - Guiding Geometry（引导几何）→ Beam/Plate 自动映射？
+   - 直接创建 Beam/Plate（精确控制）？
+3. **截面与材料**：
+   - 钢结构材料等级？（S235/S275/S355/S420/S460）
+   - 型钢截面类型？（IPipe/ISection/BoxSection/ChannelSection 等 20+ 类型）
+   - 板厚与加筋方案？
+4. **载荷类型**：自重？设备？风浪流？舱室静压？显式载荷？
+5. **分析需求**：线性静力？特征值（屈曲/模态）？动力？地震？桩土？
+6. **规范要求**：AISC / API / EN1993 / ISO19902 / Norsok / DS / CSR？
+7. **输出需求**：位移？内力？应力比 UC？Code Check 报告？FE 模型导出？
+
+## 操作前自查
+
+在生成 GeniE JavaScript 脚本前，确认以下信息（避免脚本执行失败）：
+
+| 检查项 | 确认方法 | 目的 |
+|:---|:---|:---|
+| 截面库文件路径 | 确认 `.sect` 文件位置 | 避免 `sectionLibrary not found` |
+| 型钢截面名称 | 查 `## 型钢库文件速查` 或 `截面类型速查` | 确保截面名拼写正确 |
+| 材料等级 | 查 `## 材料参数速查` | 确保 yield/fu/E/ν 值正确 |
+| 规范校核参数 | 查 `## 教程速查` 中对应规范 Tutorial | 确保 code check 参数完整 |
+| 分析活动名称 | 保持命名一致性 | 避免 activity 与 loadcase 不匹配 |
+
+## Validation Checklist
+
+生成脚本后逐项检查：
+
+- [ ] 材料已定义（`Material` 创建并赋值属性）
+- [ ] 截面库已加载（`SectionLibrary` 导入成功）
+- [ ] Beam/Plate 已创建并赋值截面/材料
+- [ ] Guiding Geometry 拓扑连续（无断点、无内部边线残留）
+- [ ] 载荷已定义并关联到正确的工况
+- [ ] 分析活动（Activity）已创建，类型与工况匹配
+- [ ] 网格参数（`meshDensity`）已设置且 > 0
+- [ ] FE 模型已成功生成（`createFEModel` 无报错）
+- [ ] 规范校核参数完整（code check 所需的 member/load combination）
+
 ## 信息来源优先级
 
 | 优先级 | 数据来源 | 说明 |

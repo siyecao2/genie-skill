@@ -80,8 +80,8 @@ description: "SESAM GeniE 海洋工程结构建模专家。当你需要进行导
 | LoadCombination/载荷组合 | `snippets/loads.md` |
 | Analysis/MeshActivity/LinearAnalysis/分析设置 | `snippets/analysis.md` |
 | CodeCheck/CapacityManager/Member/Joint 规范校核 | `snippets/code_check.md` |
-| PileSoil/桩土分析/SoilCurves | `snippets/pile_soil.md` |
-| Fatigue/疲劳分析/Hotspot 热点应力 | `snippets/fatigue.md` |
+| Tutorial JS 脚本示例集/9种关键模式 | `reference/js_examples.md` |
+| 型钢库/材料库/KZY/XML/截面命名规范 | `reference/libraries_catalog.md` |
 | 网格控制/meshDensity/ElementType/MeshRefinement | `snippets/meshing.md` |
 | ModelTransformer/ModelTranslation/ModelRotation/ModelMirror | `snippets/model_transforms.md` |
 | 型钢截面库查询/AISC/NSF_EN/截面规格 | `reference/section_library.md` |
@@ -106,8 +106,8 @@ description: "SESAM GeniE 海洋工程结构建模专家。当你需要进行导
 | 上部组块建模 (Topside) | `templates/topside_model.md` |
 | 半潜平台建模 (Semisub) | `templates/semisub_model.md` |
 | 起重机基座建模 (Crane Pedestal) | `templates/crane_pedestal.md` |
-| 自升式平台 (Jack-up) | `templates/jackup_model.md` |
-| 船舶货舱区建模 (Ship Cargo) | `templates/ship_cargo.md` |
+| 自升式平台/船舶货舱 (参见 `reference/tutorial_index.md`) | 参考 A5(货舱) + A7(半潜) + A8(运输) 教程 |
+
 | 管节点建模 (Tubular Joint) | `templates/tubular_joint.md` |
 | 波浪载荷 (Wind Loads) | `templates/wind_loads.md` |
 | 标准分析流程 | `workflows/standard_workflow.md` |

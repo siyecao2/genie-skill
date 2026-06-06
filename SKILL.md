@@ -92,6 +92,14 @@ description: "SESAM GeniE 海洋工程结构建模专家。当你需要进行导
 | 单位系统/换算 | `reference/unit_systems.md` |
 | GeniE 兼容性规则/GenieRules | `reference/genie_rules.md` |
 | 教程索引（B1-B12 基础 / A1-A16 高级） | `reference/tutorial_index.md` |
+| Excel 建模向导/Deck Wizard/Jacket Wizard | `reference/wizard_templates.md` |
+| 规范校核标准详解/AISC/API/EN1993/ISO/NORSOK/DS/CSR | `reference/code_check_standards.md` |
+| 板格校核/CSR BC&OT/Panel Code Check | `reference/panel_code_check.md` |
+| 报告生成/Word/Excel/章节模板 | `reference/report_generation.md` |
+| 水动力属性/Morison/AirDrag/MarineGrowth | `reference/hydro_properties.md` |
+| 高级梁建模/变截面/管节点/偏心/铰接/屈曲 | `snippets/advanced_beam.md` |
+| 舱室载荷/Compartment/液舱/进水/散货 | `snippets/compartment_loads.md` |
+| 自由曲面/蒙皮/Sweep/放样/船体外板 | `snippets/freeform_shells.md` |
 | 导管架建模 (Jacket) | `templates/jacket_model.md` |
 | 上部组块建模 (Topside) | `templates/topside_model.md` |
 | 半潜平台建模 (Semisub) | `templates/semisub_model.md` |

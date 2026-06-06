@@ -634,7 +634,31 @@ Analysis1.execute();
 ```
 
 ---
+## 本地 SESAM 模块环境
 
+本机安装的 SESAM 模块版本：
+
+| 模块 | 版本 | 用途 |
+|------|------|------|
+| **GeniE** | V8.8-08 | 结构建模（本 Skill 核心） |
+| **Sestra** | V10.17-02 | 线性/动力有限元求解 |
+| **Wadam** | V10.3-02 | 波浪衍射/辐射分析 |
+| **Wajac** | V7.10-01 | Morison 波浪载荷 |
+| **Splice** | V8.1-00 | 桩土相互作用分析 |
+| **Usfos** | V9.0-00 | 非线性倒塌/极限状态 |
+| **HydroD** | V4.10-01 / V7.0-01 | 水动力分析/稳性 |
+| **Framework** | V4.4-00 | 批处理与自动化 |
+| **Xtract** | (内嵌) | 结果后处理与查看 |
+| **Postresp** | V7.2-03 | 响应后处理 |
+| **Mimosa** | V6.3-10 | 系泊分析 |
+| **Submod** | V3.3-01 | 子模型分析 |
+| **Sima** | V4.6-04 | 海上施工模拟 |
+| **ShellDesign** | V6.3-02 | 板壳规范校核 |
+| **Sesam Converters** | V2.3-04 | 格式转换工具 |
+
+**跨模块工作流参考**：`reference/sesam_workflow.md`
+
+---
 ## MCP 工具集成
 
 本 Skill 可与 simulation-mcp 的 genie 工具配合使用：
@@ -651,6 +675,8 @@ Analysis1.execute();
 | `genie_parse_js` | 解析 GeniE JS 脚本结构 | js_path |
 | `genie_get_script_template` | 获取脚本模板 | type (beam/plate/jacket) |
 | `genie_run_script` | 运行 GeniE 脚本 | script_path, project_dir |
+| `genie_generate_structure` | 自动生成 beam/plate/jacket 结构脚本 | structure_type, project_name |
+| `genie_search_help` | 全文搜索 GeniE Help 文档（444KB索引） | query, max_results |
 
 ---
 
